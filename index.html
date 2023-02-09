@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測定アプリ</title>
+    <meta name="description" content="aaa">
+    <link rel="stylesheet" href="./assets/CSS/measure_app_ver2.css">
+</head>
+<body>
+
+    <section class="section1">
+        <h1 class="header_text">寸法測定アプリ</h1>
+        <div class="header_content">
+            <div class="hContent axis">
+                <label for="" class="axis_label">軸方向</label>
+                <img src="./assets/image/座標軸.png" alt="NaN">
+            </div>
+            <div class="hContent popUp">
+                <div class="init_setting_label">
+                    <div>
+                        <div class="popUp_text">◆方向を指定してください</div>
+                        <select class="select_direct" id="">
+                            <option value="null">未選択</option>
+                            <option value="x">X方向</option>
+                            <option value="y">Y方向</option>
+                            <option value="Length">２点間</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="popUp_text">◆基準寸法を入力ください</div>
+                        <input type="number" value="0" id="initial_value">
+                        <label for="">[mm]</label>
+                    </div>
+                    <div class="button-setting">
+                        <button class="button-setting_content" data-setbutton="0">OK</button>
+                        <button class="button-setting_content" data-setbutton="1">Cancel</button>
+                    </div>
+                </div>
+                <div class="popUpLabel">基準となる２点をクリックしてください</div>
+                <div class="popUpLabel">測定したい２点をクリックしてください</div>
+
+            </div>
+            <div class="hContent select-button">
+                <div class="select_label">▼ボタン選択</div>
+                <div class="initial_setting">初期設定</div>
+                <div class="MeasureTriger">測定</div>
+                <div class="allClear">測定全消去</div>
+            </div>
+        </div>
+    </section>
+    <section class="section2" id="dnd">
+            <canvas id="c1"></canvas>
+            <div class="canvas_label">画像(.png)をドラッグ or <br>ペースト (Ctrl+v)してください</div>
+    </section>
+
+
+
+
+    <!-- <button class="initial_setting">初期設定</button><br>
+    <button class="MeasureTriger">測定開始</button><br>
+    <button class="test">測定結果をすべて消去</button><br>
+    <button class="test">ダミー</button><br>
+    <button class="test">ダミー</button> -->
+    
+    <script src="./assets/js/measure_app_ver2"></script>
+    
+</body>
+</html>
