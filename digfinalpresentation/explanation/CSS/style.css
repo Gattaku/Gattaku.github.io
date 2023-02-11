@@ -1,4 +1,6 @@
-
+.spacer {
+    margin-top: 10px;
+}
 
 .slide {
     margin : 0 auto;
@@ -42,4 +44,17 @@ img {
 #page {
     color: white;
     font-size: 30px;
+}
+
+.link {
+    margin-top: 20px;
+    margin-left: 15%;
+}
+
+.measurement {
+    font-size: 40px;
+    border: 5px solid #000;
+    font-weight: bold;
+    padding: 10px;
+    
 }

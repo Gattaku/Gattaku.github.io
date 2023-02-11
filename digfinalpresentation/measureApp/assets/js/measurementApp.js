@@ -4,7 +4,6 @@ const arg1 = {capture: false, once: false, passive: false};
 const $can = document.getElementById('c1');
 const $ctx = $can.getContext('2d');
 const $doc = document;
-const $Label = $doc.getElementsByClassName('test');
 const $clear = $doc.getElementsByClassName('allClear');
 const $popUp = $doc.getElementsByClassName('hContent popUp');
 const $initLabel = $doc.getElementsByClassName('initSettingLabel');
@@ -13,9 +12,11 @@ const $setDir = $doc.getElementsByClassName('selectDirect');
 const $initVal = $doc.getElementById('initialValue');
 const $SetButton = $doc.getElementsByClassName('buttonSettingContent');
 const $MeasureTrriger = $doc.getElementsByClassName('MeasureTriger');
-const $CancelTrriger = $doc.getElementsByClassName('cancelTrriger');
 const $initSet =$doc.getElementsByClassName('initialSetting');
 const $canLabel =$doc.getElementsByClassName('canvasLabel');
+const $lineWidth = $doc.getElementById('lineWidthRange');
+const $lineWidthValue = $doc.getElementsByClassName('currentValue');
+const $lineColor = $doc.getElementById('lineColorSelect');
 //クリックイベントの情報を残しておく関数
 let clickCnt = 0; //クリックの回数をカウント（偶数回の時にcanvasへのdrawをする)
 let positionInfo = []; //文字列として各測定点を格納する ("xStart yStart xEnd yEnd");
@@ -55,6 +56,8 @@ let measurePointCircle = "#ff0000"; //測定点のカラーを選択
 let lineWidth = 3; //線の太さ
 let initMeasureLineColor = "#00fbff";
 let initPointCircle = "#00fbff";
+//初期値を表示する
+$lineWidthValue[0].innerHTML = ` ${lineWidth}`;
 //*******************************↑↑↑↑↑ */
 //***測定結果を書くための変数/定数 */
 let targetVal = 100;
@@ -88,6 +91,11 @@ window.onresize = fitCanvasSize;
 //⑦ポップアップdelete
 //⑧測定結果を動かすための関数
 //⑨キャンセルが実行されると配列の要素をからにする
+//⑩初期設定のポップアップ
+//⑪初期値を測定するポップアップ
+//⑫係数を求めるための関数
+//⑬線幅を変えるための関数
+//⑭線色を変えるための関数
 
 //************対象の画像をキャンバス上にセッティングする **************************/
 //ドラッグ’ドロップのコード
@@ -194,12 +202,15 @@ const canDraw = window.onload = (arrayData) => {
             //何もしない
           } else { 
             const tempPosition = arrayData[index].trim().split(" ")
-            $ctx.beginPath () ;
-            $ctx.moveTo( parseInt(tempPosition[0])-ballRadius/2, parseInt(tempPosition[1])-ballRadius/2) ;
-            $ctx.lineTo( parseInt(tempPosition[2]-ballRadius/2), parseInt(tempPosition[3])-ballRadius/2) ;
-            $ctx.strokeStyle = lineColor ;
-            $ctx.lineWidth = lineWidth ;
-            $ctx.stroke();
+            console.log(lineWidth);
+            if (lineWidth !== 0){
+              $ctx.beginPath () ;
+              $ctx.moveTo( parseInt(tempPosition[0])-ballRadius/2, parseInt(tempPosition[1])-ballRadius/2) ;
+              $ctx.lineTo( parseInt(tempPosition[2]-ballRadius/2), parseInt(tempPosition[3])-ballRadius/2) ;
+              $ctx.strokeStyle = lineColor ;
+              $ctx.lineWidth = lineWidth ;
+              $ctx.stroke();
+            }
             if (initSetting !==1){
               $ctx.beginPath () ;
               $ctx.moveTo( (parseInt(tempPosition[0])+parseInt(tempPosition[2]))/2, (parseInt(tempPosition[1])+parseInt(tempPosition[3]))/2 ) ;
@@ -365,6 +376,22 @@ const checkLean = (array) => {
   console.log(lean);
 }
 
+//⑬線幅を変えるための関数
+$lineWidth.addEventListener('input', (e)=>{
+  const lineWidthValue= e.target.value;
+  $lineWidthValue[0].innerHTML = ` ${lineWidthValue}   `;
+  lineWidth = lineWidthValue;
+  canDraw(positionInfo);
+})
+
+//⑭線色を変えるための関数
+$lineColor.addEventListener('change',(e)=>{
+  const colorValue = e.target.value;
+  measureLineColor = colorValue;
+  canDraw(positionInfo);
+})
+
+
 
 //関数定義終わり******************************************************************************************************************:
 
@@ -469,6 +496,7 @@ $clear[0].addEventListener('click', (e)=>{
     $measure[cnt].style.display = 'none';
   }
 })
+
 
 
 

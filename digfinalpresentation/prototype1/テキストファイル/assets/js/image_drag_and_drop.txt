@@ -1,0 +1,195 @@
+
+
+//即時関数の中に入れる　（グローバル汚染対策)
+(()=>{
+
+
+	//ドラッグ＆ドロップして画像を反映するコード
+	const target = document.getElementById('image');
+	target.addEventListener('dragover', function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	e.dataTransfer.dropEffect = 'copy';
+	});
+	target.addEventListener('drop', function (e) {
+	e.stopPropagation();
+	e.preventDefault();
+	const reader = new FileReader();
+	reader.onload = function (e) {
+		document.getElementById('preview').src = e.target.result;
+	}
+	reader.readAsDataURL(e.dataTransfer.files[0]);
+	});
+
+	//ドラッグ＆ドロップのソース終わり
+
+	const $doc = document;
+	const $preview = $doc.getElementById("preview");
+	const $init_val = $doc.getElementById("initial_value");
+	const $select_tab = $doc.getElementsByClassName("select-tab");
+	const tabLen = $select_tab.length;
+	const $tab_data = $doc.querySelectorAll('[data-tabno]');
+	const ACTIVATE_ = 'is-active'
+	const $lean = $doc.getElementsByClassName('value');
+	const $set_dir = $doc.getElementsByClassName('init_setting_dir');
+	const select_opt = document.getElementById('init_dir');
+	let measure_index = 10;
+	
+
+
+
+
+	//クリックされた際に動く関数
+	let cnt=0; //start-endを見分けるカウント数
+	let x_start=0;
+	let y_start=0;
+	let x_end =0;
+	let y_end=0;
+	let x_dif = 0;
+	let y_dif = 0;
+	let x_y_length = 0;
+	let lean =0;
+
+
+
+	//***********座標計算をするために関数************************************************************** */
+	const handleClick = (e)=>{
+		// e.preventDefault();
+		let check_cnt =0; //どのチェックボックスが反映されているかを見る
+		while(check_cnt <tabLen){
+			if($tab_data[check_cnt].classList.length ===2){
+				measure_index = check_cnt;
+			}
+			check_cnt++;
+		}
+		if(measure_index ===10){
+			window.alert('初期設定or測定点が選択されていません');
+			return;
+		}
+
+		if(cnt === 0  && measure_index ===0 ){ //cntが０の時は、start地点を表し、1の時は終了地点を表す
+			x_start = event.clientX;
+			y_start = event.clientY;
+			$doc.getElementsByClassName("S1")[0].style.display = 'block';
+			$doc.getElementsByClassName("S1")[0].style.position = 'absolute';
+			$doc.getElementsByClassName("S1")[0].style.left = x_start-10+'px';
+			$doc.getElementsByClassName("S1")[0].style.top = y_start-10+'px';
+
+
+
+			cnt++;
+		}else if(cnt !==0 && measure_index ===0){
+			x_end = event.clientX;
+			y_end = event.clientY;
+			cnt=0;
+			$doc.getElementsByClassName("E1")[0].style.display = 'block';
+			$doc.getElementsByClassName("E1")[0].style.position = 'absolute';
+			$doc.getElementsByClassName("E1")[0].style.left = x_end-10+'px';
+			$doc.getElementsByClassName("E1")[0].style.top = y_end-10+'px';
+			x_dif = x_end-x_start;
+			y_dif = y_end-y_start;
+			x_y_length = (x_dif**2+y_dif**2)**(1/2);
+			if($set_dir[0].value === 'X方向'){
+				lean = ($init_val.value/x_dif);
+			}else if($set_dir[0].value === 'Y方向'){
+				lean = ($init_val.value/y_dif);
+			}else {
+				lean = ($init_val.value/x_y_length);
+
+			}
+
+			console.log("X座標の差->"+ (x_dif));
+			console.log("Y座標の差->"+ (y_dif));
+			console.log("距離の差は>"+ ((x_dif**2+y_dif**2)**(1/2))); //これで距離を計算できることを確認済み
+			
+			// let lean_up = lean.toFixed(4);
+			$lean[0].textContent = lean;
+			let index = 0;
+			while(index < tabLen){
+			$tab_data[index].classList.remove(ACTIVATE_);
+			index++;
+			};
+			measure_index =10;
+		}else if(cnt ===0 && measure_index !==0){
+			if($lean[0].textContent === '未取得'){
+				window.alert('初期設定をしてください');
+				return;
+			}
+			x_start = event.clientX;
+			y_start = event.clientY;
+			cnt++;
+		}else if(cnt !==0 && measure_index !==0){
+			x_end = event.clientX;
+			y_end = event.clientY;
+			cnt=0;
+			x_dif = x_end-x_start;
+			y_dif = y_end-y_start;
+			x_y_length = (x_dif**2+y_dif**2)**(1/2);
+			console.log("$lean[0].value->", $lean[0].textContent);
+			x_dif = (x_dif * $lean[0].textContent).toFixed(2);
+			y_dif = (y_dif * $lean[0].textContent).toFixed(2);
+			x_y_length =(x_y_length * $lean[0].textContent).toFixed(2);
+			$lean[(measure_index*3-2)].textContent = x_dif;
+			$lean[(measure_index*3-1)].textContent = y_dif;
+			$lean[(measure_index*3)].textContent = x_y_length;
+			let index = 0;
+			while(index < tabLen){
+			$tab_data[index].classList.remove(ACTIVATE_);
+			index++;
+			};
+			measure_index =10;
+		}
+
+
+
+
+
+		// x = event.clientX;
+		// y = event.clientY;
+		// console.log("X初期座標->"+x_start);
+		// console.log("y初期座標->"+y_start);
+		// console.log("X座標->"+x_end);
+		// console.log("y座標->"+y_end);
+		// console.log("関数終了")
+	};
+	//***************************************************************************************************: */
+
+	const handleClick_tab = (e)=>{
+		e.preventDefault();
+		const $this = e.target;
+		let targetVal = $this.dataset.tabno;
+		// 対象外のNav、Contentをすべてリセットする
+		let index = 0;
+		while(index < tabLen){
+			$tab_data[index].classList.remove(ACTIVATE_);
+			index++;
+		};
+		$tab_data[targetVal].classList.add(ACTIVATE_);
+		return targetVal;
+
+	
+	};
+
+
+
+
+	// ***clickイベントを起こすコード*************************************************************************
+	$preview.addEventListener('click', (e)=>handleClick(e));
+
+	let index_click=0;
+    while(index_click < tabLen){
+        $tab_data [index_click].addEventListener('click', (e)=> handleClick_tab(e));
+        index_click++;
+    };
+	
+
+	// ***************************************************************************************************
+
+
+
+
+
+
+
+}) ();
+

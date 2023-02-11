@@ -5,6 +5,7 @@
     background-color: rgb(77, 76, 76);
     height: 220px;
     position: relative;
+    max-width: 100%;
 }
 .headerText{
     text-align: center;
@@ -134,6 +135,39 @@
     cursor: pointer;
     font-size: 20px;
 
+}
+
+.humberger {
+    position: absolute;
+    right: 0.1%;
+    display: flex;
+    text-align: right;
+}
+
+#nav {
+    position:fixed;
+    right: -270px;
+    top: 0;
+    width: 270px;
+    height: 100%;
+    background-color: #000;
+    color: #fff;
+    ;
+}
+.spaceSet {
+    margin-top: 50px;
+}
+
+
+.show {
+    transform:translate3d(-270px,0,0);
+}
+
+.lineWidth,.lineColor,.cicleSize {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 

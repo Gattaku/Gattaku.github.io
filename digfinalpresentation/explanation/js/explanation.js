@@ -4,7 +4,7 @@
     const numPage =2; //Totalページ数を指定する必要あり
     const images = [];
     for (let i = 0; i < numPage ; i++){
-        images.push(`explanation/image/image${i+1}.JPG`);
+        images.push(`explanation/image/スライド${i+1}.JPG`);
     }
 
 

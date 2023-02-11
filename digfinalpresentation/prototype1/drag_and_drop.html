@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寸法測定</title>
+    <meta name="description" content="sample">
+    <link rel="stylesheet" href="./assets/CSS/syyle_image.css">
+</head>
+<body>
+    <div class="drag_box">
+        <label id="image" >
+            ここに画像ファイルをドロップ
+        </label>
+        <div class="in_out_data">
+            <div class="init-data">
+                <label for="" class="select-tab" data-tabno="0">初期設定</label>
+                <label for="" class="setting-label">方向；</label>
+                <select class="init_setting_dir" id="init_dir">
+                    <option value="X方向">X方向</option>
+                    <option value="Y方向">Y方向</option>
+                    <option value="直線距離">直線距離</option>
+                </select>
+                <label class="setting-label">寸法；</label>
+                <input type="number" value="0" id="initial_value">
+                <label for="" class="unit">[mm]</label>
+                <label for="" class="setting-label">係数；</label>
+                <label for="" class="value">未取得</label>
+                <label for="" class="unit">[mm/px]</label>
+            </div>
+            <div class="measure-data">
+                <label for="" class="select-tab" data-tabno="1">測定点１</label>
+                <label for="" class="setting-label-measure">X方向；</label>
+                <label for="" class="value">未取得</label>
+                <label for="" class="setting-label-measure">Y方向；</label>
+                <label for="" class="value">未取得</label>
+                <label for="" class="setting-label-measure">直線距離；</label>
+                <label for="" class="value">未取得</label>
+            </div>
+            <div class="measure-data">
+                <label for="" class="select-tab" data-tabno="2">測定点２</label>
+                <label for="" class="setting-label-measure">X方向；</label>
+                <label for="" class="value">未取得</label>
+                <label for="" class="setting-label-measure">Y方向；</label>
+                <label for="" class="value">未取得</label>
+                <label for="" class="setting-label-measure">直線距離；</label>
+                <label for="" class="value">未取得</label>
+            </div>
+            <div class="measure-data">
+                <label for="" class="select-tab" data-tabno="3">測定点３</label>
+                <label for="" class="setting-label-measure">X方向；</label>
+                <label for="" class="value">未取得</label>
+                <label for="" class="setting-label-measure">Y方向；</label>
+                <label for="" class="value">未取得</label>
+                <label for="" class="setting-label-measure">直線距離；</label>
+                <label for="" class="value">未取得</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="center_image">
+        <div class="axis-img">
+            <img src="./assets/image/座標軸.png" alt="NaN" class="axis">
+        </div>
+        <img id="preview">
+        <div class="point start initial-point">S0</div>
+        <div class="point end initial-point">E0</div>
+        <div class="point start measure_data1">S1</div>
+        <div class="point end measure_data1">E1</div>
+        <div class="point start measure_data2">S2</div>
+        <div class="point end measure_data2">E2</div>
+        <div class="point start measure_data3">S3</div>
+        <div class="point end measure_data3">E3</div>
+        
+        
+    </div>
+    
+    <script src="./assets/js/image_drag_and_drop.js"></script>
+</body>
+</html>
