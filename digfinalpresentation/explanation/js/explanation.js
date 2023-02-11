@@ -4,13 +4,10 @@
     const numPage =2; //Totalページ数を指定する必要あり
     const images = [];
     for (let i = 0; i < numPage ; i++){
-        images.push(`explanation/image/image${i+1}.jpg`);
+        images.push(`explanation/image/image${i+1}.JPG`);
     }
-    console.log(images);
 
-    
 
-    // const images = ['images/image1.jpg', 'images/image2.jpg', 'images/image3.jpg', 'images/image4.jpg', 'images/image5.jpg'];
     let current = 0;
     
     function changeImage(num) {
