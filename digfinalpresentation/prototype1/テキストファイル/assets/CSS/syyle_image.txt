@@ -1,0 +1,110 @@
+.drag_box{
+    display: flex;
+    text-align: center;
+    margin-top: 40px;
+    height: 150px;
+}
+
+#image{
+    border: solid 5px #ccc;
+    padding:20px 20px;
+    width: 40%;
+    font-weight: bold;
+    font-size: 30px;
+    text-align: center;
+}
+
+.in_out_data{
+    margin-left: 20px;
+    margin-top: 10px;
+    align-items: center;
+    text-align: center;
+    width: 50%;
+}
+.select-tab{
+    padding: 2px;
+    border: solid 1px;
+    border-radius: 2px;
+    color: #000;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #fff;
+}
+
+.select-tab.is-active{
+    color: #fff;
+    background-color: #000;
+}
+
+.init-data{
+    margin-bottom: 5px;
+    float: left;
+}
+.measure-data{
+    margin-bottom: 5px;
+    float: left;
+}
+
+.init_setting_dir{
+    padding: 2px;
+    font-size: 20px;
+    width: 120px;
+    margin-left: 10px;
+
+}
+.setting-label{
+    font-size: 20px;
+    background-color: rgb(224, 248, 8);
+    margin-left: 10px;
+    margin-right: 2px;
+    width: auto;
+
+}
+#initial_value{
+    font-size: 20px;
+    margin-left: 10px;
+    margin-right: 2px;
+    width: 50px;
+}
+
+
+.setting-label-measure{
+    padding: 2px;
+    font-size: 20px;
+    width: 120px;
+    margin-left: 10px;
+}
+.value{
+    padding: 2px;
+    font-size: 20px;
+    border: solid 1px;
+    width: 300px;
+    margin-left: 10px;
+}
+
+/* .unit{} */
+
+
+.center_image{
+    text-align: center;
+}
+
+#preview{
+    width: 80%;
+    height: auto;
+}
+
+.S1{
+    width: 20px;
+    height: 20px;
+    background-color: rgb(253, 0, 0);
+    border-radius: 50%;
+    display: none;
+}
+.E1{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgb(253, 0, 0);
+    display: none;
+}
