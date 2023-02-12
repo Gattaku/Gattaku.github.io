@@ -1,11 +1,22 @@
 .spacer {
     margin-top: 10px;
+    display: flex;
+    justify-content: right;
+    margin-right: 16%;
+    margin-bottom: 5px;
+}
+
+#timeManager{
+    border: 2px solid #000;
+    font-size: 20px;
+    padding: 2px;
+    margin: 2px;
 }
 
 .slide {
     margin : 0 auto;
     border: 1px solid black;
-    width: 70%;
+    width: 65%;
     height: auto;
     background-color: black;
     text-align: center;
@@ -52,9 +63,9 @@ img {
 }
 
 .measurement {
-    font-size: 40px;
+    font-size: 30px;
     border: 5px solid #000;
     font-weight: bold;
-    padding: 10px;
+    padding: 2px;
     
 }

@@ -4,6 +4,8 @@
     const $wrap = $doc.getElementById('wrapper');
     const $nav = $doc.getElementById('nav');
     const $img = $doc.getElementById('settingImg');
+    const $manual = $doc.getElementById('manualLink');
+
 
     $hum.addEventListener('click',(e)=>{
         if ($wrap.classList.contains('show')){

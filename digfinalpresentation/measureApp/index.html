@@ -48,10 +48,10 @@
                     <div class="MeasureTriger">測定</div>
                     <div class="allClear">測定全消去</div>
                 </div>
-                <div class="humberger" id="opneNav">
-                    <img id="settingImg" src="./assets/image/setting.png" alt="#">
+                <div class="humberger" >
+                    <div id="opneNav"><img id="settingImg" src="./assets/image/setting.png" alt="#"></div>
+                    <div id="manualLink"><a href="./assets/html/manual.html" target="_blank" rel="noopener"><img id="settingImg" src="./assets/image/manual.png" alt="#"></a></div>
                 </div>
-            </div>
         </section>
         <section class="section2" id="dnd">
                 <canvas id="c1"></canvas>
@@ -62,18 +62,40 @@
 
     <nav id="nav">
         <div class="spaceSet"></div>
+        <div class="contentLabel">
+            <div>線</div>
+        </div>
         <div class="lineWidth">
-            <div class="settingText">線の太さ</div>
+            <div class="settingText">サイズ</div>
             <div><input type="range" id="lineWidthRange" min="1" max="15" value="3"></div>
-            <div class="currentValue"></div>
+            <div class="currentValue" id="linewidthId"></div>
         </div>
         <div class="lineColor">
-            <div class="settingText">線の色</div>
+            <div class="settingText">色</div>
             <div><input type="color" id="lineColorSelect" value="#ff0000"></div>
             <div class="currentValue"></div>
         </div>
-        <div class="linecolor"><span>bbbb</span></div>
-        <div class="circlesize"><span>cccc</span></div>
+        <div class="contentLabel">
+            <div>始点/終点</div>
+        </div>
+        <div class="circleSize">
+            <div class="settingText">サイズ</div>
+            <div><input type="range" id="circleSizeRange" min="1" max="10" value="4"></div>
+            <div class="currentValue" id="circleSizeId"></div>
+        </div>
+        <div class="circleColor">
+            <div class="settingText">色</div>
+            <div><input type="color" id="circleColor" value="#ff0000"></div>
+            <div class="currentValue"></div>
+        </div>
+        <div class="contentLabel">
+            <div>測定結果ラベル</div>
+        </div>
+        <div class="resultColor">
+            <div class="settingText">色</div>
+            <div><input type="color" id="resultColorSelect" value="#70fa00"></div>
+            <div class="currentValue"></div>
+        </div>
     </nav>
 
     
