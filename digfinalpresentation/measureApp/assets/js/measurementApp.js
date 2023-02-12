@@ -12,11 +12,17 @@ const $setDir = $doc.getElementsByClassName('selectDirect');
 const $initVal = $doc.getElementById('initialValue');
 const $SetButton = $doc.getElementsByClassName('buttonSettingContent');
 const $MeasureTrriger = $doc.getElementsByClassName('MeasureTriger');
+const $MeasureLabel = $doc.getElementsByClassName('MeasureLabel');
 const $initSet =$doc.getElementsByClassName('initialSetting');
 const $canLabel =$doc.getElementsByClassName('canvasLabel');
 const $lineWidth = $doc.getElementById('lineWidthRange');
-const $lineWidthValue = $doc.getElementsByClassName('currentValue');
+const $lineWidthValue = $doc.getElementById('linewidthId');
 const $lineColor = $doc.getElementById('lineColorSelect');
+const $resultColor = $doc.getElementById('resultColorSelect');
+const $circleSize = $doc.getElementById('circleSizeRange');
+const $circleSizeValue = $doc.getElementById('circleSizeId')
+const $circleColor = $doc.getElementById('circleColor');
+
 //クリックイベントの情報を残しておく関数
 let clickCnt = 0; //クリックの回数をカウント（偶数回の時にcanvasへのdrawをする)
 let positionInfo = []; //文字列として各測定点を格納する ("xStart yStart xEnd yEnd");
@@ -50,14 +56,16 @@ let item = null;
 let img1EventTarget = null;
 //**************************↑↑↑↑↑*/
 //****線を書くために必要な変数/定数↓↓↓↓↓ */
-const ballRadius = 4;
+let ballRadius = 4;
 let measureLineColor = "#ff0000"; //測定線のカラーを選択
 let measurePointCircle = "#ff0000"; //測定点のカラーを選択
 let lineWidth = 3; //線の太さ
 let initMeasureLineColor = "#00fbff";
 let initPointCircle = "#00fbff";
+let resultColor = "#70fa00";
 //初期値を表示する
-$lineWidthValue[0].innerHTML = ` ${lineWidth}`;
+$lineWidthValue.innerHTML = `${lineWidth}`;
+$circleSizeValue.innerHTML = `${ballRadius}`;
 //*******************************↑↑↑↑↑ */
 //***測定結果を書くための変数/定数 */
 let targetVal = 100;
@@ -379,7 +387,7 @@ const checkLean = (array) => {
 //⑬線幅を変えるための関数
 $lineWidth.addEventListener('input', (e)=>{
   const lineWidthValue= e.target.value;
-  $lineWidthValue[0].innerHTML = ` ${lineWidthValue}   `;
+  $lineWidthValue.innerHTML = ` ${lineWidthValue}   `;
   lineWidth = lineWidthValue;
   canDraw(positionInfo);
 })
@@ -391,6 +399,30 @@ $lineColor.addEventListener('change',(e)=>{
   canDraw(positionInfo);
 })
 
+//⑮結果ラベルの色を変えるための関数
+$resultColor.addEventListener('change',(e)=>{
+  const colorValue = e.target.value;
+  resultColor = colorValue;
+  console.log(resultColor);
+  for (let i = 0; i < $MeasureLabel.length ;i++){
+    $MeasureLabel[i].style.backgroundColor = resultColor;
+  }
+})
+
+//⑯点の大きさを変えるための関数
+$circleSize.addEventListener('input', (e)=>{
+  const circleSize= e.target.value;
+  $circleSizeValue.innerHTML = `${circleSize}`;
+  ballRadius = circleSize;
+  canDraw(positionInfo);
+})
+
+//⑰点の色を変えるための関数
+$circleColor.addEventListener('change',(e)=>{
+  const colorValue = e.target.value;
+  measurePointCircle = colorValue;
+  canDraw(positionInfo);
+})
 
 
 //関数定義終わり******************************************************************************************************************:
@@ -454,37 +486,46 @@ $can.addEventListener('click', (e) => {
 
 //測定ラベルがクリックされた際にイベント発生
 $MeasureTrriger[0].addEventListener('click', (e) =>{
-  $MeasureTrriger[0].classList.add(ACTIVATE_);
-  measureTrriger =1;
-  $popUp[0].style.display = 'block';
-  $popLabel[1].style.display = 'block';
-  let newLabel = document.getElementById('dnd');
-  let newElement = document.createElement('label');
-  newElement.className = 'MeasureLabel';
-  newElement.innerText = '測定結果'+ measureDataLabelCnt+'\nX\nY\nL';
-  newElement.dataset.measure = measureDataLabelCnt;
-  newLabel.appendChild(newElement);
-  newElement.addEventListener('mousedown', (e)=>{
-    const $this = e.target;
-    targetVal = $this.dataset.measure;
-    $can.addEventListener('mousemove',move);
-  });
-  newElement.addEventListener('mouseup', ()=>{
-    $can.removeEventListener('mousemove',move);
-  });
+  if (lean ===0){
+    window.alert("初期設定をしてください");
+  } else {
+    $MeasureTrriger[0].classList.add(ACTIVATE_);
+    measureTrriger =1;
+    $popUp[0].style.display = 'block';
+    $popLabel[1].style.display = 'block';
+    let newLabel = document.getElementById('dnd');
+    let newElement = document.createElement('label');
+    newElement.className = 'MeasureLabel';
+    newElement.style.backgroundColor = resultColor;
+    newElement.innerText = '測定結果'+ measureDataLabelCnt+'\nX\nY\nL';
+    newElement.dataset.measure = measureDataLabelCnt;
+    newLabel.appendChild(newElement);
+    newElement.addEventListener('mousedown', (e)=>{
+      const $this = e.target;
+      targetVal = $this.dataset.measure;
+      $can.addEventListener('mousemove',move);
+    });
+    newElement.addEventListener('mouseup', ()=>{
+      $can.removeEventListener('mousemove',move);
+    });
+  }
 })
 
 $initSet[0].addEventListener('click', (e)=>{
-  $initSet[0].classList.add(ACTIVATE_);
-  $popUp[0].style.display = 'block';
-  $initLabel[0].style.display = 'block';
-  initSetting =1;
-  initPreventIndex =1;
-  let cnt=0;
-  while(cnt < $SetButton.length){
-    $SetButton[cnt].addEventListener('click',(e)=>PopUpchange(e));
-    cnt++;
-  }  
+  if (judgeImg===0){
+    window.alert("画像を先に貼り付けてください");
+  } else {
+    $initSet[0].classList.add(ACTIVATE_);
+    $popUp[0].style.display = 'block';
+    $initLabel[0].style.display = 'block';
+    initSetting =1;
+    initPreventIndex =1;
+    let cnt=0;
+    while(cnt < $SetButton.length){
+      $SetButton[cnt].addEventListener('click',(e)=>PopUpchange(e));
+      cnt++;
+    }  
+  }
 })
 
 $clear[0].addEventListener('click', (e)=>{
