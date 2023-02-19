@@ -3,7 +3,7 @@
 (()=>{
 
     //**ページ送りのためのコード**********************************
-    const numPage =5; //Totalページ数を指定する必要あり
+    const numPage =4; //Totalページ数を指定する必要あり
     const images = [];
     for (let i = 0; i < numPage ; i++){
         images.push(`explanation/image/slide_master/スライド${i+1}.JPG`);

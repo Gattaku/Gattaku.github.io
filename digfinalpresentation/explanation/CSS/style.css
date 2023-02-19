@@ -59,13 +59,16 @@ img {
 
 .link {
     margin-top: 20px;
-    margin-left: 15%;
+    margin-left: 16%;
+    padding: 3px;
+    
 }
 
 .measurement {
     font-size: 30px;
+    color: #ff0000;
     border: 5px solid #000;
     font-weight: bold;
-    padding: 2px;
-    
+    padding: 10px;
+    border-radius: 16px;   
 }
