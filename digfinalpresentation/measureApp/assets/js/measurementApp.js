@@ -69,12 +69,14 @@ let targetVal = 100;
 let measurementCnt =0;
 //********************************** */
 //*****Canvasサイズを全体にするための定数 */
-const canvasWidth = document.documentElement.clientWidth - 38;
-const canvasHeight = document.documentElement.clientHeight - 10;
+let canvasWidth = document.documentElement.clientWidth - 38;
+let canvasHeight = document.documentElement.clientHeight - 10;
 //************************************************************ */
 //**********************canvasのサイズをwindowサイズに合わせる関数******************************
 function fitCanvasSize() {
   // Canvas のサイズをクライアントサイズに合わせる
+  canvasWidth = document.documentElement.clientWidth - 38;
+  canvasHeight = document.documentElement.clientHeight - 10;
   $can.width = canvasWidth;
   $can.height = canvasHeight;
 }  
@@ -415,6 +417,11 @@ $circleSize.addEventListener('input', (e)=>{
 $circleColor.addEventListener('change',(e)=>{
   const colorValue = e.target.value;
   measurePointCircle = colorValue;
+  canDraw(positionInfo);
+})
+//⑱画面のリサイズ時に再度CanDrawを呼び出す
+window.addEventListener('resize',()=>{
+  fitCanvasSize();
   canDraw(positionInfo);
 })
 
