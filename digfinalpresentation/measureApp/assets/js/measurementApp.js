@@ -22,6 +22,7 @@ const $resultColor = $doc.getElementById('resultColorSelect');
 const $circleSize = $doc.getElementById('circleSizeRange');
 const $circleSizeValue = $doc.getElementById('circleSizeId')
 const $circleColor = $doc.getElementById('circleColor');
+const $togglebutton = $doc.getElementsByClassName('toggle_input');
 
 //クリックイベントの情報を残しておく関数
 let clickCnt = 0; //クリックの回数をカウント（偶数回の時にcanvasへのdrawをする)
@@ -72,6 +73,10 @@ let measurementCnt =0;
 let canvasWidth = document.documentElement.clientWidth - 38;
 let canvasHeight = document.documentElement.clientHeight - 10;
 //************************************************************ */
+//*****トグルボタン用 */
+let toggleTrigger = false;
+//************************************************************ */
+
 //**********************canvasのサイズをwindowサイズに合わせる関数******************************
 function fitCanvasSize() {
   // Canvas のサイズをクライアントサイズに合わせる
@@ -206,7 +211,6 @@ const canDraw = window.onload = (arrayData) => {
             //何もしない
           } else { 
             const tempPosition = arrayData[index].trim().split(" ")
-            console.log(lineWidth);
             if (lineWidth !== 0){
               $ctx.beginPath () ;
               $ctx.moveTo( parseInt(tempPosition[0])-ballRadius/2, parseInt(tempPosition[1])-ballRadius/2) ;
@@ -275,11 +279,17 @@ const measureDataSet = (str)=>{
                                         '\n直線='+L
   measureCancelLabelMake();
   //MeasureTrriger初期化と測定開始ボタンのis-activeを消す。
-  $MeasureTrriger[0].classList.remove(ACTIVATE_);
-  popUpdeleat();
-  measureTrriger =0;
   measurementCnt++;
   measureDataLabelCnt++;
+  if (toggleTrigger){
+    console.log("トグルボタンはこっちを指してます。")
+    // measureContent();
+  } else {
+    popUpdeleat();
+    console.log("こっちはトグルボタンなんで通ってないよ")
+    measureTrriger =0;
+    $MeasureTrriger[0].classList.remove(ACTIVATE_);
+  }
 };
 
 //⑥キャンセルボタンを作る
@@ -425,6 +435,17 @@ window.addEventListener('resize',()=>{
   canDraw(positionInfo);
 })
 
+//⑲測定部分のトグルボタンの状態を監視する
+$togglebutton[0].addEventListener('change',(event)=>{
+  const tempvalue = event.target.checked;
+  if (tempvalue){
+    toggleTrigger = true;
+  } else {
+    toggleTrigger = false;
+  }
+  console.log(toggleTrigger);
+})
+
 
 //関数定義終わり******************************************************************************************************************:
 
@@ -463,10 +484,13 @@ $can.addEventListener('click', (e) => {
               const position = makeCanCordinate (e);
               if (clickCnt % 2 ===0) {
                 positionInfo[positionInfo.length-1] = `${positionInfo[positionInfo.length-1]} ${position}`;
-                $MeasureTrriger[0].classList.remove(ACTIVATE_);
-                measureTrriger = 0;
+                if (!toggleTrigger){
+                  $MeasureTrriger[0].classList.remove(ACTIVATE_);
+                  measureTrriger = 0;
+                }
                 measureDataSet(positionInfo[positionInfo.length-1]);
               } else {
+                measureContent();
                 positionInfo.push(position);
               }
               canDraw(positionInfo);
@@ -486,31 +510,58 @@ $can.addEventListener('click', (e) => {
 });
 
 //測定ラベルがクリックされた際にイベント発生
-$MeasureTrriger[0].addEventListener('click', (e) =>{
+const measureContent = ()=>{
+  console.log("measureContentに飛んできてます")
+  // $popUp[0].style.display = 'block';
+  // $popLabel[1].style.display = 'block';
+  let newLabel = document.getElementById('dnd');
+  let newElement = document.createElement('label');
+  newElement.className = 'MeasureLabel';
+  newElement.style.backgroundColor = resultColor;
+  newElement.innerText = '測定結果'+ measureDataLabelCnt+'\nX\nY\nL';
+  newElement.dataset.measure = measureDataLabelCnt;
+  newLabel.appendChild(newElement);
+  newElement.addEventListener('mousedown', (e)=>{
+    const $this = e.target;
+    targetVal = $this.dataset.measure;
+    $can.addEventListener('mousemove',move);
+  });
+  newElement.addEventListener('mouseup', ()=>{
+    $can.removeEventListener('mousemove',move);
+  });
+}
+
+const measureStart = (e) =>{
   if (lean ===0){
     window.alert("初期設定をしてください");
   } else {
-    $MeasureTrriger[0].classList.add(ACTIVATE_);
-    measureTrriger =1;
-    $popUp[0].style.display = 'block';
-    $popLabel[1].style.display = 'block';
-    let newLabel = document.getElementById('dnd');
-    let newElement = document.createElement('label');
-    newElement.className = 'MeasureLabel';
-    newElement.style.backgroundColor = resultColor;
-    newElement.innerText = '測定結果'+ measureDataLabelCnt+'\nX\nY\nL';
-    newElement.dataset.measure = measureDataLabelCnt;
-    newLabel.appendChild(newElement);
-    newElement.addEventListener('mousedown', (e)=>{
-      const $this = e.target;
-      targetVal = $this.dataset.measure;
-      $can.addEventListener('mousemove',move);
-    });
-    newElement.addEventListener('mouseup', ()=>{
-      $can.removeEventListener('mousemove',move);
-    });
+    if (!toggleTrigger){
+      if (!$MeasureTrriger[0].classList.contains(ACTIVATE_)){
+        $MeasureTrriger[0].classList.add(ACTIVATE_);
+        measureTrriger =1;
+        $popUp[0].style.display = 'block';
+        $popLabel[1].style.display = 'block';
+        // measureContent();
+      } else {
+        $MeasureTrriger[0].classList.remove(ACTIVATE_);
+        measureTrriger = 0;
+      }
+    } else {
+      if (!$MeasureTrriger[0].classList.contains(ACTIVATE_)){
+      $MeasureTrriger[0].classList.add(ACTIVATE_);
+      measureTrriger =1;
+      $popUp[0].style.display = 'block';
+      $popLabel[1].style.display = 'block';
+      // measureContent();
+      } else {
+      $MeasureTrriger[0].classList.remove(ACTIVATE_);
+      measureTrriger = 0;
+      popUpdeleat();
+      }
+    }
   }
-})
+}
+$MeasureTrriger[0].addEventListener('click', measureStart);
 
 $initSet[0].addEventListener('click', (e)=>{
   if (judgeImg===0){

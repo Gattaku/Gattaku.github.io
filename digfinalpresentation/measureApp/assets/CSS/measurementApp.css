@@ -76,6 +76,90 @@
     left: 82%;
 
 }
+
+.pushbutton{
+    display: flex;
+    justify-content: right;
+}
+.toggle_input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .toggle_label {
+    width: 50px;
+    height: 20px;
+    background: #ccc;
+    position: relative;
+    display: inline-block;
+    border-radius: 40px;
+    transition: 0.4s;
+    box-sizing: border-box;
+  }
+  
+  .toggle_label:after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: 0.4s;
+  }
+  
+  .toggle_input:checked + .toggle_label {
+    background-color: #4BD865;
+  }
+  
+  .toggle_input:checked + .toggle_label:after {
+    left: 30px;
+  }
+  
+  .toggle_button {
+    position: relative;
+    width: 50px;
+    height: 20px;
+    margin: auto;
+    margin-right: 8px;
+  }
+
+  .toggle_button {
+    position   : relative;                /* 指定した分だけ相対的に移動 */
+  }
+  .toggle_button:hover .balloon {
+    display: inline;                /* インライン要素として表示 */
+  }
+  .balloon {
+    position   : absolute;                /* 親要素を基準 */
+    display: none;                        /* 要素を非表示 */
+    padding: 2px;                         /* テキストの前後の余白 */
+    background-color: rgba(255, 0, 76, 0.34);       /* 背景色（透明度） */
+    width:140px;                          /* 吹き出し全体の幅 */
+    right : 60px;                           /* 表示位置 */
+    font-size: 20px; 
+    color: #fff;                      /* 文字サイズ */
+  }
+  .balloon:after{
+    border-left: 12px solid rgba(255, 0, 76, 0.34);   /* 吹き出し口の幅・色 */
+    border-top: 10px solid transparent;     /* 吹き出し口の高さ１／２ */
+    border-bottom: 10px solid transparent;  /* 吹き出し口の高さ１／２ */
+    right: -12px;                           /* 吹き出し口の位置調整 */
+    top: 5%;                                /* 吹き出し口の縦位置 */
+    content: "";                       /* コンテンツの挿入 */
+    position: absolute;                /* 親要素を基準 */
+  }
+
+
 .selectLabel{
     margin-bottom: 10px;
     font-size: 20px;
@@ -93,6 +177,7 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 20px;
+    width: 100px;
 }
 .initialSetting.is-active{
     margin-bottom: 10px;
@@ -114,6 +199,7 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 20px;
+    width: 100px;
 }
 .MeasureTriger.is-active{
     margin-bottom: 10px;
@@ -134,7 +220,7 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 20px;
-
+    width: 100px;
 }
 
 .humberger {
