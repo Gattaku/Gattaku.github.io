@@ -1,0 +1,50 @@
+.label-container{
+    display: flex;
+    /* width: 150px; */
+    background-color: white;
+    border: 1px solid red;
+}
+
+.result-show{
+    flex: 80%;
+    margin-right: 7px;
+}
+
+.label-operator{
+    flex: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.temp {
+    position: absolute;
+}
+
+.deletebtn,.continuebtn{
+    font-size: 1rem!important;
+    padding: 0!important;
+}
+
+.detail-label{
+    position: relative;
+}
+
+.select-result{
+    position:absolute;
+    top:0px;
+    left:35px;
+    border:1px solid black;
+    background-color:white;
+}
+
+.select-result-item{
+    display: flex;
+}
+
+.select-result-item-name{
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

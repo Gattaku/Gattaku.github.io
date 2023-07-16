@@ -5,7 +5,7 @@ const HeaderText = () => {
   return (
     <div className='header-area'>
       <div className="header-text-content">
-        <div>
+        <div className='headerTitle'>
           測定アプリ
         </div>
       </div>
