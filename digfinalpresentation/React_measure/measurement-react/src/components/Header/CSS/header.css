@@ -1,30 +1,37 @@
+.headerTitle{
+    font-size: 22px;
+    font-weight: bold;
+    color: rgb(231, 229, 229);
+}
 
 
 .header-container {
-    background-color:gray;
+    /* position: fixed; */
+    background-color:rgba(0, 45, 74, 0.426);
     display: flex;
     height: 150px;
+   /* color: ; */
 }
 
 .axis-container{
     flex: 30%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     flex-direction: column;
     justify-content: end;
 }
 .header-text{
     flex: 40%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     vertical-align:middle;    
 }
 .operate-area{
     flex: 25%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .function-area{
     flex: 5%;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .axis-content{
@@ -35,6 +42,12 @@
     justify-content: end;
     margin-left: 15px;
 }
+
+.axis-name{
+    color: white;
+}
+
+
 .axis-image{
     height: 80%;
 }
@@ -60,7 +73,8 @@
 .popup-area{
    flex: 75%;
    width: 60%;
-   border: 1px solid white;
+   border: 2px solid white;
+   border-radius: 10px;
    margin-bottom: 5px;
 }
 
@@ -93,26 +107,67 @@
     width: 80%; 
 }
 
+.toggle-btn-area{
+    flex: 60%;
+    display: flex;
+}
+
+
 .hover-comment{
-    flex: 30%;
+    flex: 80%;
+    opacity: 0;
+    background-color: rgba(255, 0, 76, 0.34);       /* 背景色（透明度） */
+    width:120px;                          /* 吹き出し全体の幅 */
+    right : 60px;                           /* 表示位置 */
+    font-size: 15px; 
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
 }
 
 .toggle-btn {
     flex: 20%;
 }
 
-.btn-name{
-    flex:50%;
-    text-align: center;
+.toggle-btn-area:hover .hover-comment{
+    opacity: 1;
+    transition:all 0.6s ease;
 }
-/* 
+
+.btn-name{
+    flex:40%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .canvas-area {
-    margin-right: 50px;
-} */
+    /* height: 550px; */
+    /* overflow: auto; */
+    position: relative;
+}
 
 .canvas-grid{
+    /* height: 100%; */
     border: 2px solid black;
 }
 
+.popupTextArea{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.popUpLabel{
+    font-weight: bold;
+    color: white;
+}
+
+.btn-title{
+    color: white;
+}
 

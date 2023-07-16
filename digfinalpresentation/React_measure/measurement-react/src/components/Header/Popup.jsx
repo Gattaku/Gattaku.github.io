@@ -68,11 +68,15 @@ const Popup = () => {
         )
     } else if (popupNum===2) {
         return (
-            <div className="popUpLabel">基準となる２点をクリックしてください</div>
+            <div className="popupTextArea">
+                <div className="popUpLabel">基準となる２点をクリックしてください</div>
+            </div>
         )
     } else if (popupNum===3) {
         return (
-            <div className="popUpLabel">測定中です</div>
+            <div className="popupTextArea">
+                <div className="popUpLabel">測定したい２点をクリックしてください</div>
+            </div>
         )
     }
 
