@@ -25,6 +25,14 @@ export const MeasurementDataSlice = createSlice({
             }
             state.temp = setObject;
         },
+        addTempPoint: (state, action) => {
+            const [x, y] = action.payload;
+            state.temp.lengthData[2] = x;
+            state.temp.lengthData[3] = y;
+        },
+        deleteTempPoint: (state) => {
+            state.temp = {}
+        },
         addSecondPoint: (state, action) => {
             const transedData = [...action.payload];
             const id = transedData.splice(0, 1);
@@ -41,12 +49,24 @@ export const MeasurementDataSlice = createSlice({
             state.value.push(addData);
 
         },
-        changeResultSelectFlg: (state, action) => {
+        setResultSelectFlg: (state, action) => {
             const index = action.payload;
-            state.value[index].resultSelectFlg = !state.value[index].resultSelectFlg;
+            state.value[index].resultSelectFlg = true;
+        },
+        resetResultSelectFlg: (state, action) => {
+            const index = action.payload;
+            state.value[index].resultSelectFlg = false;
         },
         deleateData: (state, action) => {
             state.value = action.payload;
+        },
+        setOperateFlg: (state, action) => {
+            const index = action.payload;
+            state.value[index].measureLabel.operateIcon = true;
+        },
+        resetOperateFlg: (state, action) => {
+            const index = action.payload;
+            state.value[index].measureLabel.operateIcon = false;
         },
         changeMoveFlg: (state, action) => {
             const getData = [...action.payload];
@@ -65,15 +85,38 @@ export const MeasurementDataSlice = createSlice({
             state.value = action.payload;
             state.globalMove.globalMoveFlg = false;
         },
+        removeMoveFlg: (state) => {
+            state.globalMove.globalMoveFlg = false;
+            state.value.forEach((elm) => {
+                elm.measureLabel.moveFlg = false;
+            })
+        },
         changeShowFlg: (state, action) => {
             const getData = [...action.payload];
             const index = getData.splice(0, 1);
             const item = getData.splice(0, 1);
             state.value[index].resultData[item].showFlg = getData[0];
-        }
+        },
+
+
 
     },
 })
 
-export const { createNewData, addSecondPoint, changeResultSelectFlg, deleateData, changeMoveFlg, moveLabel, resetMoveAction, changeShowFlg } = MeasurementDataSlice.actions;
+export const {
+    createNewData,
+    addTempPoint,
+    deleteTempPoint,
+    addSecondPoint,
+    setResultSelectFlg,
+    resetResultSelectFlg,
+    deleateData,
+    setOperateFlg,
+    resetOperateFlg,
+    changeMoveFlg,
+    moveLabel,
+    resetMoveAction,
+    removeMoveFlg,
+    changeShowFlg
+} = MeasurementDataSlice.actions;
 export default MeasurementDataSlice.reducer;

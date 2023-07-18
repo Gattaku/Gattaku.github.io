@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { handleCanvasClick } from '../../assets/controller/CalcuraterHandler';
-import { calculateLean,combineData } from '../../assets/controller/CalcuraterHandler';
+import {handleCanvasClick, calculateLean,combineData,calculateMeasureLabel } from '../../assets/controller/CalcuraterHandler';
 import { changeLean,changeCordinate,checkCompleted } from '../../Redux/features/InitialSettingSlice';
 import { changePopNum, changeClickCnt} from '../../Redux/features/ControllerSlice';
-import { createNewData, addSecondPoint, moveLabel,resetMoveAction } from '../../Redux/features/MeasurementDataSlice';
+import { createNewData,addTempPoint,deleteTempPoint, addSecondPoint, moveLabel,resetMoveAction, removeMoveFlg } from '../../Redux/features/MeasurementDataSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getImgSrc } from '../../Redux/features/InitialSettingSlice';
 import { v4 as uuidv4 } from 'uuid';
 import MeasureLabel from './MeasureLabel';
+import InitMsg from './InitMsg';
 
-import { calculateMeasureLabel } from '../../assets/controller/CalcuraterHandler';
 
 
 
@@ -98,8 +97,7 @@ const Canvas = (props) => {
   }, []);
   //クリックした場所に点を打つ
   useEffect(() => {
-    console.log("effect発火してます")
-    if (!(popupNum===2 || popupNum ===3 || popupNum===100 || popupNum === 101)) return; //とある条件下しか受け付けない
+    if (!(popupNum === 0 || popupNum===2 || popupNum ===3 || popupNum===100 || popupNum === 101)) return; //とある条件下しか受け付けない
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     const canvasDraw = (arg) => {
@@ -163,8 +161,6 @@ const Canvas = (props) => {
     // changePopupNum =100 ->どれかのラベルを削除したとき
     // changePopupNum =101 ->どれかのラベルを動かすしたとき
 
-    console.log(popupNum);
-    console.log(typeof popupNum);
     if (popupNum===100 || popupNum ===101) {
       console.log("ここも通ってるよ")
       if (measureData.length === 0) return
@@ -175,8 +171,19 @@ const Canvas = (props) => {
       }
     }
 
+    //測定中の２点目をクリックする前に線を表示する
+    if (popupNum === 3 && clickCnt) {
+      const [drawArray, labelPosi] = combineData(measureData)
+      drawArray.push(...tempMeasure.lengthData);
+      canvasDraw([drawArray,labelPosi]);
+    }
 
-    
+    //途中で測定ボタンをクリックでキャンセルした場合
+    if (popupNum === 0) {
+      const [drawArray, labelPosi] = combineData(measureData)
+      canvasDraw([drawArray,labelPosi]);
+    }
+
     const handleCanvasClickOnReact = (e) => {
       switch (popupNum) {
 
@@ -218,7 +225,8 @@ const Canvas = (props) => {
             canvasDraw([drawArray,labelPosi]);
 
           } else {
-            const tempPoint = [...tempMeasure.lengthData,...resultNew]
+            // const tempPoint = [...tempMeasure.lengthData,...resultNew]
+            const tempPoint = [tempMeasure.lengthData[0],tempMeasure.lengthData[1],...resultNew]
             const transData = [...tempMeasure.id,lean,...tempPoint];
             dispatch(addSecondPoint(transData));
             dispatch(changeClickCnt());
@@ -236,22 +244,59 @@ const Canvas = (props) => {
           break;
       }
     };
-    canvas.addEventListener('click',handleCanvasClickOnReact);
+    if (popupNum ===2 || popupNum === 3) {
+      canvas.addEventListener('click',handleCanvasClickOnReact);
+    }
 
     return () => {
       canvas.removeEventListener('click', handleCanvasClickOnReact);
     };
-  }, [imgSrc,popupNum,clickCnt,direction,lean, measureData,measureColor,measureLineWidth,ballradius,windowDimensions]);
+  }, [imgSrc,popupNum,clickCnt,direction,lean, measureData,tempMeasure,measureColor,measureLineWidth,ballradius,windowDimensions]);
 
   const handleMouseMove = (e,id)=> {
-    const tempMeasureData = [...measureData];
-    const index = tempMeasureData.findIndex((elm)=> elm.id === id);
-    dispatch(moveLabel([index,e.clientX-30,e.clientY-180]));
+
+    //Label移動の際
+    if (globalMoveFlg) {
+      const tempMeasureData = [...measureData];
+      const index = tempMeasureData.findIndex((elm)=> elm.id === id);
+      dispatch(moveLabel([index,e.clientX-30,e.clientY-180]));
+    }
+
+    //２回目の点の際
+    if (popupNum === 3 && clickCnt) {
+      const [x,y] = handleCanvasClick(e);
+      dispatch(addTempPoint([x,y]));
+    }
   }
 
   const handleNothing = () => {
 
   }
+
+
+  const handleKeyDown = (e) => {
+    if (globalMoveFlg) { //globalMoveFlgが外せなかった場合の対応
+      if (e.key === "Escape") {
+        dispatch(removeMoveFlg());
+      }
+    }
+    // if (popupNum === 3) {
+    //   console.log("ここ通ってます2")
+    //   if (e.key === "Escape") {
+    //     console.log(clickCnt);
+    //     if (clickCnt){
+    //       console.log("ここ通ってます")
+    //       dispatch(changeClickCnt());
+    //       dispatch(deleteTempPoint());
+    //     } 
+    //     dispatch(changePopNum(0));
+    //   }
+    // }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown, false)
+  }, [globalMoveFlg])
 
 
   return (
@@ -261,10 +306,11 @@ const Canvas = (props) => {
         ref={canvasRef}
         width = {windowDimensions.innerWidth-5}
         height={windowDimensions.innerHeight-160}
-        onMouseMove= {globalMoveFlg ?(e)=> handleMouseMove(e,id) : handleNothing}
+        onMouseMove= {(globalMoveFlg || (popupNum === 3 && clickCnt)) ?(e)=> handleMouseMove(e,id) : handleNothing}
       >
       </canvas>
       <MeasureLabel />
+      <InitMsg />
     </div>
   )
 }

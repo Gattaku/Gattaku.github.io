@@ -1,3 +1,7 @@
+
+
+
+
 export const handleCanvasClick = (e) => {
     const revice = e.target.getBoundingClientRect();
     const x = e.clientX - revice.left;
@@ -62,6 +66,7 @@ export const calculateMeasureLabel = (pointData) => {
     const yAverage = (pointData[3] + pointData[1]) / 2;
     const measureCordinate = [xAverage, yAverage, xAverage + 100, yAverage + 100];
     return ({
+        operateIcon: false,
         moveFlg: false,
         measurePosition: measureCordinate,
     })
