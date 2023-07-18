@@ -6,7 +6,7 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import Switch from '@mui/material/Switch';
 
-import {changeResultSelectFlg,changeMoveFlg, moveLabel,changeShowFlg } from '../../Redux/features/MeasurementDataSlice';
+import {setResultSelectFlg,resetResultSelectFlg, changeMoveFlg,setOperateFlg,resetOperateFlg, moveLabel,changeShowFlg } from '../../Redux/features/MeasurementDataSlice';
 
 import { deleateData } from '../../Redux/features/MeasurementDataSlice';
 import { changePopNum } from '../../Redux/features/ControllerSlice';
@@ -60,13 +60,31 @@ const MeasureLabel = () => {
         dispatch(changeShowFlg([index,2,e.target.checked])); //第2引数 0:x, 1:y, 2:Length
     }
 
-    const handleChangeResultSelect = (id) => {
+    const handleMouseOver = (id,operateFlg) => {
+        if (operateFlg) return;
         const tempMeasureData = [...measureData];
         const index = tempMeasureData.findIndex((elm)=> elm.id === id);
-        dispatch(changeResultSelectFlg(index));
+        dispatch((setOperateFlg(index)));
     }
 
+    const handleMouseLeave =  (id) => {
+        const tempMeasureData = [...measureData];
+        const index = tempMeasureData.findIndex((elm)=> elm.id === id);
+        dispatch((resetOperateFlg(index)));
+    }
 
+    const handleDetailMouseOver = (id, flg) => {
+        if (flg) return;
+        const tempMeasureData = [...measureData];
+        const index = tempMeasureData.findIndex((elm)=> elm.id === id);
+        dispatch(setResultSelectFlg(index));
+    }
+
+    const handleDetailMouseLeave = (id) => {
+        const tempMeasureData = [...measureData];
+        const index = tempMeasureData.findIndex((elm)=> elm.id === id);
+        dispatch(resetResultSelectFlg(index));
+    }
 
  
     if (measureData.length === 0) {
@@ -80,6 +98,7 @@ const MeasureLabel = () => {
             measureData.map((eachResult)=> {
             const id = eachResult.id;
             const resultSelectFlg = eachResult.resultSelectFlg;
+            const operateFlg = eachResult.measureLabel.operateIcon;
             const labelPoint = eachResult.measureLabel.measurePosition;
             const measureResult = eachResult.resultData;
             const xFlg = measureResult[0].showFlg;
@@ -96,6 +115,8 @@ const MeasureLabel = () => {
                         left:labelPoint[2],
                         backgroundColor:labelColor,
                     }}
+                    onMouseOver={()=>handleMouseOver(id,operateFlg)}
+                    onMouseLeave={()=>handleMouseLeave(id)}
                 >
                     <div 
                         className="result-show"
@@ -108,6 +129,7 @@ const MeasureLabel = () => {
                                     <div key={elm.dataLabel}
                                      style = {{
                                         fontSize: `${labelFontSize}px`,
+                                        margin: "3px 5px",
                                      }}
                                     >
                                         {`${elm.dataLabel}${elm.data}`}
@@ -116,15 +138,22 @@ const MeasureLabel = () => {
                             })
                         }
                     </div>
-                    <div className="label-operator">
+                    <div className="label-operator"
+                        style={{
+                            display: operateFlg ? "flex" : "none", 
+                        }}
+                    >
                         <div className="cancel-label">
                             <button onClick={()=>handleLabelCancel(id)}>
                                 <DeleteForeverIcon className='deletebtn' />
                             </button>
                         </div>
-                        <div className="detail-label">
+                        <div className="detail-label"
+                            onMouseOver={()=> handleDetailMouseOver(id,resultSelectFlg)}
+                            onMouseLeave={()=> handleDetailMouseLeave(id)}
+                        >
                             <div>
-                                <button onClick={()=>handleChangeResultSelect(id)} >
+                                <button>
                                     {resultSelectFlg?                                    
                                     <KeyboardDoubleArrowLeftIcon className='continuebtn'/>:
                                     <KeyboardDoubleArrowRightIcon className='continuebtn'/>

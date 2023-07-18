@@ -1,7 +1,8 @@
 import React from 'react';
-import { changePopNum, changeContinueMeasureFlg } from '../../Redux/features/ControllerSlice';
+import { changePopNum,changeClickCnt, changeContinueMeasureFlg } from '../../Redux/features/ControllerSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Switch from '@mui/material/Switch';
+import { deleteTempPoint } from '../../Redux/features/MeasurementDataSlice';
 
 
 
@@ -9,11 +10,21 @@ const Operater = () => {
 
   const dispatch = useDispatch();
   const {completed,imgSrc} = useSelector((state)=>state.initialSetting);
-  const {popupNum, continueMeasureFlg} = useSelector((state)=> state.controller);
+  const {popupNum,clickCnt, continueMeasureFlg} = useSelector((state)=> state.controller);
 
 
   const handleChange = (e) => {
-    dispatch((changeContinueMeasureFlg(e.target.checked)))
+    dispatch((changeContinueMeasureFlg(e.target.checked)));
+    if (e.target.checked) {
+      if (clickCnt) {
+        dispatch(changeClickCnt());
+        dispatch(deleteTempPoint());
+      } 
+      dispatch(changePopNum(3));
+    } else {
+      if (clickCnt) dispatch((changeClickCnt()));
+      dispatch(changePopNum(0));
+    }
   }
 
 
@@ -27,7 +38,16 @@ const Operater = () => {
     return;
   }
   const handleMeasureStart = () => {
-    dispatch(changePopNum(3));
+    if (popupNum === 3) {
+      if (clickCnt){
+        dispatch(changeClickCnt());
+        dispatch(deleteTempPoint());
+      } 
+      dispatch(changePopNum(0));
+    } else {
+      dispatch(changePopNum(3));
+    }
+    if (continueMeasureFlg) dispatch(changeContinueMeasureFlg(false));
   }
 
   return (
@@ -45,8 +65,8 @@ const Operater = () => {
         {
           completed ?
           <>
-            <div className="toggle-btn-area">
-              <div className="hover-comment">
+            <div className="toggle-btn-area hover-toggle-btn-area">
+              <div className="hover-comment hover-show">
                 <div>
                   連続測定を許可
                 </div>
