@@ -104,7 +104,12 @@
 
 .initial-btn{
     display: flex; 
+    flex-direction: column;
     width: 80%; 
+}
+
+.measure-btn-box{
+    display: flex;
 }
 
 .toggle-btn-area{

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { calculateLength, calculateMeasureLabel } from "../../assets/controller/CalcuraterHandler";
+import { calculateLength, calculateMeasureLabel, calculateAngle, calculateAngleLabel } from "../../assets/controller/CalcuraterHandler";
 
 
 const initialState = {
@@ -30,17 +30,43 @@ export const MeasurementDataSlice = createSlice({
             state.temp.lengthData[2] = x;
             state.temp.lengthData[3] = y;
         },
+        addTempPoint2: (state, action) => {
+            const [x, y] = action.payload;
+            state.temp.lengthData[4] = x;
+            state.temp.lengthData[5] = y;
+        },
+        addAngleSecondPoint: (state, action) => {
+            state.temp.lengthData = action.payload;
+        },
+        addAngleThirdPoint: (state, action) => {
+            const transedData = [...action.payload];
+            const id = transedData.splice(0, 1);
+            const category = transedData.splice(0, 1);
+            const resultAngle = calculateAngle(transedData);
+            const measureLabel = calculateAngleLabel(transedData);
+            const addData = {
+                id: id[0],
+                category: category[0],
+                lengthData: transedData,
+                resultSelectFlg: false,
+                resultData: resultAngle,
+                measureLabel: measureLabel,
+            }
+            state.value.push(addData);
+        },
         deleteTempPoint: (state) => {
             state.temp = {}
         },
         addSecondPoint: (state, action) => {
             const transedData = [...action.payload];
             const id = transedData.splice(0, 1);
+            const category = transedData.splice(0, 1);
             const lean = transedData.splice(0, 1);
             const resultData = calculateLength(lean, transedData);
             const measureLabel = calculateMeasureLabel(transedData);
             const addData = {
                 id: id[0],
+                category: category[0],
                 lengthData: transedData,
                 resultSelectFlg: false,
                 resultData: resultData,
@@ -106,6 +132,9 @@ export const MeasurementDataSlice = createSlice({
 export const {
     createNewData,
     addTempPoint,
+    addTempPoint2,
+    addAngleSecondPoint,
+    addAngleThirdPoint,
     deleteTempPoint,
     addSecondPoint,
     setResultSelectFlg,

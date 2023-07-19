@@ -1,8 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
-import {handleCanvasClick, calculateLean,combineData,calculateMeasureLabel } from '../../assets/controller/CalcuraterHandler';
+import {handleCanvasClick, calculateLean,combineData,calculateMeasureLabel,calculateAngleLabel } from '../../assets/controller/CalcuraterHandler';
 import { changeLean,changeCordinate,checkCompleted } from '../../Redux/features/InitialSettingSlice';
-import { changePopNum, changeClickCnt} from '../../Redux/features/ControllerSlice';
-import { createNewData,addTempPoint,deleteTempPoint, addSecondPoint, moveLabel,resetMoveAction, removeMoveFlg } from '../../Redux/features/MeasurementDataSlice';
+import { changePopNum, changeClickCnt,changeAngleCnt} from '../../Redux/features/ControllerSlice';
+import {  createNewData,
+          addTempPoint,
+          addTempPoint2,
+          addAngleSecondPoint,
+          addAngleThirdPoint,
+          deleteTempPoint,
+          addSecondPoint,
+          moveLabel,
+          resetMoveAction, 
+          removeMoveFlg 
+  } from '../../Redux/features/MeasurementDataSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getImgSrc } from '../../Redux/features/InitialSettingSlice';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,7 +26,7 @@ const Canvas = (props) => {
 
   const dispatch = useDispatch();
   
-  const {popupNum, clickCnt,continueMeasureFlg} = useSelector((state)=> state.controller);
+  const {popupNum, clickCnt,angleCnt,continueMeasureFlg,continueAngleFlg} = useSelector((state)=> state.controller);
   const {direction,baseLength,lean,cordinate,imgSrc,measureColor,measureLineWidth,ballradius,ballColor} = useSelector((state)=>state.initialSetting);
   const measureData = useSelector((state)=>state.measureData.value);
   const tempMeasure = useSelector((state)=> state.measureData.temp);
@@ -97,7 +107,7 @@ const Canvas = (props) => {
   }, []);
   //クリックした場所に点を打つ
   useEffect(() => {
-    if (!(popupNum === 0 || popupNum===2 || popupNum ===3 || popupNum===100 || popupNum === 101)) return; //とある条件下しか受け付けない
+    if (!(popupNum === 0 || popupNum===2 || popupNum ===3 || popupNum === 4 || popupNum===100 || popupNum === 101)) return; //とある条件下しか受け付けない
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     const canvasDraw = (arg) => {
@@ -110,7 +120,9 @@ const Canvas = (props) => {
         context.drawImage(image, 0, 0);
         const temp = [...arg[0]]; // 測定点の座標
         const temp2 = [...arg[1]]; //ラベルの座標
-        //測定点を２個のデータごとに分ける
+        const temp3 = [...arg[2]]; //角度用データの座標
+        const temp4 = [...arg[3]]; //角度用データのラベルの座標
+        //寸法測定点を２個のデータごとに分ける
         const newArray = [];
         while (temp.length > 2) {
           const tempRemoval = temp.splice(0,2);
@@ -126,16 +138,32 @@ const Canvas = (props) => {
         }
         labelArray.push(temp2);
 
-        //測定点に色塗り
+        //角度測定データを2個ずつに分ける
+        const newAngleArray = [];
+        while (temp3.length > 2) {
+          const tempRemoval = temp3.splice(0,2);
+          newAngleArray.push(tempRemoval);
+        }
+        newAngleArray.push(temp3);
+
+        //角度ラベルデータを４個のデータごとに分ける。
+        const angleLabelArray = [];
+        while (temp4.length > 4) {
+          const tempRemoval = temp4.splice(0,4);
+          angleLabelArray.push(tempRemoval);
+        }
+        angleLabelArray.push(temp4);
+
+        //寸法測定点に色塗り
         for (const elm of newArray) {
           context.beginPath();
-          context.arc(elm[0], elm[1], ballradius, 0, 2 * Math.PI); // 丸の半径を20としていますが、適宜調整してください
+          context.arc(elm[0], elm[1], ballradius, 0, 2 * Math.PI); 
           context.fillStyle = ballColor; // 丸の塗りつぶし色を指定していますが、適宜変更してください
           context.fill();
           context.closePath();
         }
 
-        //測定点間を線で結ぶ
+        //寸法測定点間を線で結ぶ
         for (let i = 0; i < Math.floor(newArray.length/2);i++) {
           context.beginPath () ;
           context.moveTo(newArray[i*2][0], newArray[i*2][1]);
@@ -145,7 +173,7 @@ const Canvas = (props) => {
           context.stroke();
         }
 
-        //ラベルへ向かう線を作成
+        //寸法測定ラベルへ向かう線を作成
         for (const elm of labelArray) {
           context.beginPath () ;
           context.moveTo(elm[0],elm[1]);
@@ -154,6 +182,58 @@ const Canvas = (props) => {
           context.lineWidth = Math.ceil(measureLineWidth/3) ;
           context.stroke();
         }
+
+        //角度測定点に点を打つ
+        for (const elm of newAngleArray) {
+          context.beginPath();
+          context.arc(elm[0], elm[1], ballradius, 0, 2 * Math.PI); 
+          context.fillStyle = ballColor; // 丸の塗りつぶし色を指定していますが、適宜変更してください
+          context.fill();
+          context.closePath();
+        }
+        //角度測定点間を線で結ぶ
+        const threeAnglePoint = [];
+        while (newAngleArray.length > 3) {
+          const tempRemoval = newAngleArray.splice(0,3);
+          threeAnglePoint.push(tempRemoval);
+        }
+        threeAnglePoint.push(newAngleArray);
+        for (const elm of threeAnglePoint) {
+          if (elm.length === 0 || elm.length ===1) return;
+          if (elm.length === 2) {
+            context.beginPath () ;
+            context.moveTo(elm[0][0], elm[0][1]);
+            context.lineTo(elm[1][0], elm[1][1]);
+            context.strokeStyle = measureColor ;
+            context.lineWidth = measureLineWidth ;
+            context.stroke();
+          } else if (elm.length === 3) {
+            context.beginPath () ;
+            context.moveTo(elm[0][0], elm[0][1]);
+            context.lineTo(elm[1][0], elm[1][1]);
+            context.strokeStyle = measureColor ;
+            context.lineWidth = measureLineWidth ;
+            context.stroke();
+            context.beginPath () ;
+            context.moveTo(elm[1][0], elm[1][1]);
+            context.lineTo(elm[2][0], elm[2][1]);
+            context.strokeStyle = measureColor ;
+            context.lineWidth = measureLineWidth ;
+            context.stroke();
+          }
+        }
+
+        //角度測定ラベルへ向かう線を作成
+        for (const elm of angleLabelArray) {
+          context.beginPath () ;
+          context.moveTo(elm[0],elm[1]);
+          context.lineTo(elm[2],elm[3]);
+          context.strokeStyle = measureColor ;
+          context.lineWidth = Math.ceil(measureLineWidth/3) ;
+          context.stroke();
+        }
+
+
       };
     image.src = imgSrc;
     }
@@ -162,26 +242,31 @@ const Canvas = (props) => {
     // changePopupNum =101 ->どれかのラベルを動かすしたとき
 
     if (popupNum===100 || popupNum ===101) {
-      console.log("ここも通ってるよ")
       if (measureData.length === 0) return
-      const [drawArray, labelPosi] = combineData(measureData);
-      canvasDraw([drawArray,labelPosi]);
+      const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData);
+      canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
       if (popupNum===100){
         dispatch(changePopNum(0));
       }
     }
 
-    //測定中の２点目をクリックする前に線を表示する
+    //寸法測定中の２点目をクリックする前に線を表示する
     if (popupNum === 3 && clickCnt) {
-      const [drawArray, labelPosi] = combineData(measureData)
+      const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData)
       drawArray.push(...tempMeasure.lengthData);
-      canvasDraw([drawArray,labelPosi]);
+      canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
+    }
+    //角度測定中の３点目をクリックする前に線を表示する
+    if (popupNum === 4 && clickCnt) {
+      const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData)
+      anglePointPosi.push(...tempMeasure.lengthData);
+      canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
     }
 
     //途中で測定ボタンをクリックでキャンセルした場合
     if (popupNum === 0) {
-      const [drawArray, labelPosi] = combineData(measureData)
-      canvasDraw([drawArray,labelPosi]);
+      const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData)
+      canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
     }
 
     const handleCanvasClickOnReact = (e) => {
@@ -201,7 +286,7 @@ const Canvas = (props) => {
           if (!clickCnt) {
             dispatch(changeCordinate(result))
             dispatch(changeClickCnt());
-            canvasDraw([result,[]]);
+            canvasDraw([result,[],[],[]]);
           } else {
             const temp = [...cordinate,...result];
             dispatch(changeCordinate(temp));
@@ -210,33 +295,70 @@ const Canvas = (props) => {
             dispatch(changeClickCnt());
             dispatch(checkCompleted(true));
             dispatch(changePopNum(0));
-            canvasDraw([temp,[]]);
+            canvasDraw([temp,[],[],[]]);
           }
           break;
         case 3: //測定中の動作
           const resultNew = handleCanvasClick(e);
+          const category = "length";
           if(!clickCnt) {
             const id =uuidv4();
             const transData = [id,...resultNew];
             dispatch(createNewData(transData));
             dispatch(changeClickCnt());
-            const [drawArray, labelPosi] = combineData(measureData);
+            const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData);
             drawArray.push(...resultNew);
-            canvasDraw([drawArray,labelPosi]);
+            canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
 
           } else {
             // const tempPoint = [...tempMeasure.lengthData,...resultNew]
             const tempPoint = [tempMeasure.lengthData[0],tempMeasure.lengthData[1],...resultNew]
-            const transData = [...tempMeasure.id,lean,...tempPoint];
+            const transData = [...tempMeasure.id,category,lean,...tempPoint];
             dispatch(addSecondPoint(transData));
             dispatch(changeClickCnt());
             if (!continueMeasureFlg) {
               dispatch(changePopNum(0));
             }
-            const [drawArray, labelPosi] = combineData(measureData)
-            drawArray.push(...tempPoint);
+            const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData)
+            drawArray.push(...tempPoint); 
             labelPosi.push(...calculateMeasureLabel(tempPoint).measurePosition);
-            canvasDraw([drawArray,labelPosi]);            
+            canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);            
+          }
+          break;
+        case 4: //角度測定の場合
+          const resultAngle = handleCanvasClick(e);
+          const categoryAngle = "angle";
+          if(!clickCnt) {
+            const id =uuidv4();
+            const transData = [id,...resultAngle];
+            dispatch(createNewData(transData));
+            dispatch(changeClickCnt());
+            dispatch(changeAngleCnt(1));
+            const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData);
+            anglePointPosi.push(...resultAngle);
+            canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
+          } else {
+            if (angleCnt === 1) {
+              const tempData = [...tempMeasure.lengthData,...resultAngle]
+              dispatch(addAngleSecondPoint(tempData));
+              dispatch(changeAngleCnt(2));
+              const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData);
+              anglePointPosi.push(tempData);
+              canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
+            } else if (angleCnt ===2) {
+              const tempPoint = [tempMeasure.lengthData[0],tempMeasure.lengthData[1],tempMeasure.lengthData[2],tempMeasure.lengthData[3],...resultAngle]
+              const transData = [...tempMeasure.id,categoryAngle,...tempPoint];
+              dispatch(addAngleThirdPoint(transData));
+              dispatch(changeClickCnt());
+              dispatch(changeAngleCnt(0));
+              if (!continueAngleFlg) {
+                dispatch(changePopNum(0));
+              }
+              const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData)
+              anglePointPosi.push(...tempPoint); 
+              angleLabelPosi.push(...calculateAngleLabel(tempPoint).measurePosition);
+              canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);   
+            }
           }
           break;
         default:
@@ -244,7 +366,7 @@ const Canvas = (props) => {
           break;
       }
     };
-    if (popupNum ===2 || popupNum === 3) {
+    if (popupNum ===2 || popupNum === 3 || popupNum ===4) {
       canvas.addEventListener('click',handleCanvasClickOnReact);
     }
 
@@ -262,10 +384,21 @@ const Canvas = (props) => {
       dispatch(moveLabel([index,e.clientX-30,e.clientY-180]));
     }
 
-    //２回目の点の際
+    //寸法測定の２回目の点の際
     if (popupNum === 3 && clickCnt) {
       const [x,y] = handleCanvasClick(e);
       dispatch(addTempPoint([x,y]));
+    }
+
+    //角度測定の２回目の点の際
+    if (popupNum === 4 && angleCnt ===1 ) {
+      const [x,y] = handleCanvasClick(e);
+      dispatch(addTempPoint([x,y]));
+    }
+    //角度測定の３回目の点の際
+    if (popupNum === 4 && angleCnt ===2 ) {
+      const [x,y] = handleCanvasClick(e);
+      dispatch(addTempPoint2([x,y]));
     }
   }
 
@@ -306,7 +439,7 @@ const Canvas = (props) => {
         ref={canvasRef}
         width = {windowDimensions.innerWidth-5}
         height={windowDimensions.innerHeight-160}
-        onMouseMove= {(globalMoveFlg || (popupNum === 3 && clickCnt)) ?(e)=> handleMouseMove(e,id) : handleNothing}
+        onMouseMove= {(globalMoveFlg || (popupNum === 3 && clickCnt) || (popupNum === 4 && clickCnt)) ?(e)=> handleMouseMove(e,id) : handleNothing}
       >
       </canvas>
       <MeasureLabel />

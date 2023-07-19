@@ -78,6 +78,12 @@ const Popup = () => {
                 <div className="popUpLabel">測定したい２点をクリックしてください</div>
             </div>
         )
+    } else if (popupNum===4) {
+        return (
+            <div className="popupTextArea">
+                <div className="popUpLabel">測定したい３点をクリックしてください</div>
+            </div>
+        )
     }
 
 }
