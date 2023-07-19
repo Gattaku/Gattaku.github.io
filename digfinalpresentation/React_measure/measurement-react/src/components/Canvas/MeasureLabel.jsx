@@ -96,119 +96,176 @@ const MeasureLabel = () => {
     } else {
         return (               
             measureData.map((eachResult)=> {
-            const id = eachResult.id;
-            const resultSelectFlg = eachResult.resultSelectFlg;
-            const operateFlg = eachResult.measureLabel.operateIcon;
-            const labelPoint = eachResult.measureLabel.measurePosition;
-            const measureResult = eachResult.resultData;
-            const xFlg = measureResult[0].showFlg;
-            const yFlg = measureResult[1].showFlg;
-            const lengthFlg = measureResult[2].showFlg;
-            const tempResultData = measureResult.filter((elm)=> elm.showFlg === true);  
-            return (
-                <div
-                    className='label-container' 
-                    key={id}
-                    style={{
-                        position:'absolute',
-                        top:labelPoint[3],
-                        left:labelPoint[2],
-                        backgroundColor:labelColor,
-                    }}
-                    onMouseOver={()=>handleMouseOver(id,operateFlg)}
-                    onMouseLeave={()=>handleMouseLeave(id)}
-                >
-                    <div 
-                        className="result-show"
-                        onMouseDown={()=>handleMouseDown(id)}
-                        onMouseUp = {()=>handleMouseUp(id)}    
-                    >
-                        {
-                            tempResultData.map((elm)=>{
-                                return (
-                                    <div key={elm.dataLabel}
-                                     style = {{
-                                        fontSize: `${labelFontSize}px`,
-                                        margin: "3px 5px",
-                                     }}
-                                    >
-                                        {`${elm.dataLabel}${elm.data}`}
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                    <div className="label-operator"
-                        style={{
-                            display: operateFlg ? "flex" : "none", 
-                        }}
-                    >
-                        <div className="cancel-label">
-                            <button onClick={()=>handleLabelCancel(id)}>
-                                <DeleteForeverIcon className='deletebtn' />
-                            </button>
-                        </div>
-                        <div className="detail-label"
-                            onMouseOver={()=> handleDetailMouseOver(id,resultSelectFlg)}
-                            onMouseLeave={()=> handleDetailMouseLeave(id)}
+                if (eachResult.category === "length") {
+                    const id = eachResult.id;
+                    const resultSelectFlg = eachResult.resultSelectFlg;
+                    const operateFlg = eachResult.measureLabel.operateIcon;
+                    const labelPoint = eachResult.measureLabel.measurePosition;
+                    const measureResult = eachResult.resultData;
+                    const xFlg = measureResult[0].showFlg;
+                    const yFlg = measureResult[1].showFlg;
+                    const lengthFlg = measureResult[2].showFlg;
+                    const tempResultData = measureResult.filter((elm)=> elm.showFlg === true);  
+                    return (
+                        <div
+                            className='label-container' 
+                            key={id}
+                            style={{
+                                position:'absolute',
+                                top:labelPoint[3],
+                                left:labelPoint[2],
+                                backgroundColor:labelColor,
+                            }}
+                            onMouseOver={()=>handleMouseOver(id,operateFlg)}
+                            onMouseLeave={()=>handleMouseLeave(id)}
                         >
-                            <div>
-                                <button>
-                                    {resultSelectFlg?                                    
-                                    <KeyboardDoubleArrowLeftIcon className='continuebtn'/>:
-                                    <KeyboardDoubleArrowRightIcon className='continuebtn'/>
-                                    }
-                                </button>
+                            <div 
+                                className="result-show"
+                                onMouseDown={()=>handleMouseDown(id)}
+                                onMouseUp = {()=>handleMouseUp(id)}    
+                            >
+                                {
+                                    tempResultData.map((elm)=>{
+                                        return (
+                                            <div key={elm.dataLabel}
+                                             style = {{
+                                                fontSize: `${labelFontSize}px`,
+                                                margin: "3px 5px",
+                                             }}
+                                            >
+                                                {`${elm.dataLabel}${elm.data}`}
+                                            </div>
+                                        )
+                                    })
+                                }
                             </div>
-                            <div className="select-result"
+                            <div className="label-operator"
                                 style={{
-                                    opacity:resultSelectFlg? "1":"0",
+                                    display: operateFlg ? "flex" : "none", 
                                 }}
                             >
-                                <div className='xResult select-result-item'>
-                                    <div>
-                                        <Switch
-                                            checked={xFlg}
-                                            onChange={(e)=>handleXResultChange(e,id)}
-                                        />
-                                    </div>
-                                    <div className='select-result-item-name'>
-                                        <div>
-                                            x
-                                        </div>
-                                    </div>
+                                <div className="cancel-label">
+                                    <button onClick={()=>handleLabelCancel(id)}>
+                                        <DeleteForeverIcon className='deletebtn' />
+                                    </button>
                                 </div>
-                                <div className="yResult select-result-item">
+                                <div className="detail-label"
+                                    onMouseOver={()=> handleDetailMouseOver(id,resultSelectFlg)}
+                                    onMouseLeave={()=> handleDetailMouseLeave(id)}
+                                >
                                     <div>
-                                        <Switch 
-                                            checked={yFlg}
-                                            onChange={(e)=>handleYResultChange(e,id)}
-                                        />
+                                        <button>
+                                            {resultSelectFlg?                                    
+                                            <KeyboardDoubleArrowLeftIcon className='continuebtn'/>:
+                                            <KeyboardDoubleArrowRightIcon className='continuebtn'/>
+                                            }
+                                        </button>
                                     </div>
-                                    <div className='select-result-item-name'>
-                                        <div>
-                                            y
+                                    <div className="select-result"
+                                        style={{
+                                            opacity:resultSelectFlg? "1":"0",
+                                        }}
+                                    >
+                                        <div className='xResult select-result-item'>
+                                            <div>
+                                                <Switch
+                                                    checked={xFlg}
+                                                    onChange={(e)=>handleXResultChange(e,id)}
+                                                />
+                                            </div>
+                                            <div className='select-result-item-name'>
+                                                <div>
+                                                    x
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="lengthResult select-result-item">
-                                    <div>
-                                        <Switch 
-                                            checked={lengthFlg}
-                                            onChange={(e)=>handleLengthResultChange(e,id)}
-                                        />
-                                    </div>
-                                    <div className='select-result-item-name'>
-                                        <div>
-                                            直線
+                                        <div className="yResult select-result-item">
+                                            <div>
+                                                <Switch 
+                                                    checked={yFlg}
+                                                    onChange={(e)=>handleYResultChange(e,id)}
+                                                />
+                                            </div>
+                                            <div className='select-result-item-name'>
+                                                <div>
+                                                    y
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="lengthResult select-result-item">
+                                            <div>
+                                                <Switch 
+                                                    checked={lengthFlg}
+                                                    onChange={(e)=>handleLengthResultChange(e,id)}
+                                                />
+                                            </div>
+                                            <div className='select-result-item-name'>
+                                                <div>
+                                                    直線
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )
+                    )
+
+                } else if (eachResult.category === "angle") {
+                    const id = eachResult.id;
+                    const resultSelectFlg = eachResult.resultSelectFlg;
+                    const operateFlg = eachResult.measureLabel.operateIcon;
+                    const labelPoint = eachResult.measureLabel.measurePosition;
+                    const measureResult = eachResult.resultData;
+
+                    return (
+                        <div
+                            className='label-container' 
+                            key={id}
+                            style={{
+                                position:'absolute',
+                                top:labelPoint[3],
+                                left:labelPoint[2],
+                                backgroundColor:labelColor,
+                            }}
+                            onMouseOver={()=>handleMouseOver(id,operateFlg)}
+                            onMouseLeave={()=>handleMouseLeave(id)}
+                        >
+                            <div 
+                                className="result-show"
+                                onMouseDown={()=>handleMouseDown(id)}
+                                onMouseUp = {()=>handleMouseUp(id)}    
+                            >
+                                {/* {
+                                    tempResultData.map((elm)=>{
+                                        return ( */}
+                                            <div
+                                             style = {{
+                                                fontSize: `${labelFontSize}px`,
+                                                margin: "3px 5px",
+                                             }}
+                                            >
+                                                {`${measureResult.dataLabel}${measureResult.data}`}
+                                            </div>
+                                        {/* )
+                                    })
+                                } */}
+                            </div>
+                            <div className="label-operator"
+                                style={{
+                                    display: operateFlg ? "flex" : "none", 
+                                }}
+                            >
+                                <div className="cancel-label">
+                                    <button onClick={()=>handleLabelCancel(id)}>
+                                        <DeleteForeverIcon className='deletebtn' />
+                                    </button>
+                                </div>
+  
+                            </div>
+                        </div>
+                    )
+                }
             })
         )
     }
