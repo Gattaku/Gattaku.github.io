@@ -74,14 +74,63 @@ export const calculateMeasureLabel = (pointData) => {
 }
 
 export const calculateAngle = (pointData) => {
-    const leanA = (pointData[3] - pointData[1]) / (pointData[2] - pointData[0]);
-    const leanB = (pointData[5] - pointData[3]) / (pointData[4] - pointData[2]);
-    const tangent = (leanB - leanA) / (1 + leanB * leanA);
-    console.log(tangent);
-    let angle = (Math.atan(tangent) * 180 / (Math.PI)).toFixed(2);
-    if (angle === "NaN") angle = 90;
+    let leanA = 0;
+    if (pointData[3] - pointData[1] === 0) {
+        leanA = 0;
+    } else if (pointData[2] - pointData[0] === 0) {
+        leanA = "NaN";
+    } else {
+        leanA = (pointData[3] - pointData[1]) / (pointData[2] - pointData[0]);
+    }
+    let leanB = 0;
+    if (pointData[5] - pointData[3] === 0) {
+        leanB = 0;
+    } else if (pointData[4] - pointData[2] === 0) {
+        leanB = "NaN";
+    } else {
+        leanB = (pointData[5] - pointData[3]) / (pointData[4] - pointData[2]);
+    }
+    let angleA = 0;
+    if (leanA === 0) {
+        if (pointData[2] < pointData[0]) {
+            angleA = 0;
+        } else {
+            angleA = 180;
+        }
+    } else if (leanA === "NaN") {
+        if (pointData[3] > pointData[1]) {
+            angleA = 90;
+        } else {
+            angleA = 270;
+        }
+    } else if (leanA < 0) {
+        angleA = (pointData[2] - pointData[0]) < 0 ? Math.abs(Math.atan(leanA) * 180 / (Math.PI)) : Math.abs(Math.atan(leanA) * 180 / (Math.PI)) + 180;
+    } else {
+        angleA = (pointData[2] - pointData[0]) > 0 ? 180 - Math.abs(Math.atan(leanA) * 180 / (Math.PI)) : 360 - Math.abs(Math.atan(leanA) * 180 / (Math.PI));
+    }
+    let angleB = 0;
+    if (leanB === 0) {
+        if (pointData[4] > pointData[2]) {
+            angleB = 0;
+        } else {
+            angleB = 180;
+        }
+    } else if (leanB === "NaN") {
+        if (pointData[5] < pointData[3]) {
+            angleB = 90;
+        } else {
+            angleB = 270;
+        }
+    } else if (leanB < 0) {
+        angleB = (pointData[4] - pointData[2]) > 0 ? Math.abs(Math.atan(leanB) * 180 / (Math.PI)) : Math.abs(Math.atan(leanB) * 180 / (Math.PI)) + 180;
+    } else {
+        angleB = (pointData[4] - pointData[2]) < 0 ? 180 - Math.abs(Math.atan(leanB) * 180 / (Math.PI)) : 360 - Math.abs(Math.atan(leanB) * 180 / (Math.PI));
+    }
+    let angle = Math.abs(angleB - angleA).toFixed(2);
+    angle > 180 ? angle = 360 - angle : angle = angle;
+
     return {
-        dataLabel: "角度=",
+        dataLabel: "Θ=",
         data: angle,
     }
 }

@@ -156,18 +156,22 @@ const Operater = () => {
           :
           <>
           <div className='initial-btn'>
-            <div className="hover-comment">
-            </div>
-            <div className="toggle-btn">
-            </div>
-            <div className='btn-name'>
-              <button onClick={handleInitialClick}
-                style={{
-                  backgroundColor: popupNum === 1 ? 'black': "snow",
-                  color: popupNum ===1 ? "white": "black",
-                }}
-              >
-                初期設定</button>
+            <div className="measure-btn-box">
+              <div className="toggle-btn-area hover-toggle-btn-area">
+                <div className="hover-comment">
+                </div>
+                <div className="toggle-btn">
+                </div>
+              </div>
+              <div className='btn-name'>
+                <button onClick={handleInitialClick}
+                  style={{
+                    backgroundColor: popupNum === 1 ? 'black': "snow",
+                    color: popupNum ===1 ? "white": "black",
+                  }}
+                >
+                  初期設定</button>
+              </div>
             </div>
           </div>
           </>

@@ -64,6 +64,8 @@ const Canvas = (props) => {
       reader.onload = (readerEvent) => {
         const image = new Image();
         image.onload = () => {
+          canvas.width = image.width; /* キャンバスの幅を設定 */
+          canvas.height = image.height; /* キャンバスの高さを設定 */
           context.clearRect(0, 0, canvas.width, canvas.height);
           context.drawImage(image, 0, 0);
         };
@@ -242,9 +244,12 @@ const Canvas = (props) => {
     // changePopupNum =101 ->どれかのラベルを動かすしたとき
 
     if (popupNum===100 || popupNum ===101) {
-      if (measureData.length === 0) return
-      const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData);
-      canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
+      if (measureData.length === 0) {
+        canvasDraw([[],[],[], []]);
+      } else {
+        const [drawArray, labelPosi,anglePointPosi, angleLabelPosi] = combineData(measureData);
+        canvasDraw([drawArray,labelPosi,anglePointPosi, angleLabelPosi]);
+      }
       if (popupNum===100){
         dispatch(changePopNum(0));
       }
@@ -433,9 +438,18 @@ const Canvas = (props) => {
 
 
   return (
-    <div className='canvas-area'>
+    <div className='canvas-area'
+      style = {{
+        
+        border: "2px solid black",
+        // height: "500px",
+      }}
+    >
       <canvas
         className='canvas-grid'
+        style={{
+          overflow:"scroll",
+        }}
         ref={canvasRef}
         width = {windowDimensions.innerWidth-5}
         height={windowDimensions.innerHeight-160}
